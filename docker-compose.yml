@@ -1,0 +1,13 @@
+services:
+  api:
+    build: ./api
+    env_file: ".env"
+    volumes:
+      - ./logs/api:/opt/app/logs
+    network_mode: "host"
+  worker:
+    build: ./worker
+    env_file: ".env"
+    volumes:
+      - ./logs/worker:/opt/app/logs
+    network_mode: "host"
