@@ -14,7 +14,7 @@ const getTimeSchemaForUpdates = (): TimeSchema => {
 };
 
 const getTimeSchemaForAlerts = (): TimeSchema => {
-  const minutes = process.env.ALERTS_TTL_MI || 2;
+  const minutes = process.env.ALERTS_TTL_MIN || 2;
   const cron = `*/${minutes} * * * *`;
   const ttlForRedis = Number(minutes) * 60 * 2;
   return { cron, ttlForRedis };
