@@ -8,13 +8,5 @@ export const loggerOptions = {
       },
     },
   },
-  production: {
-    transport: {
-      target: "pino/file",
-      options: {
-        destination: "logs/api.log",
-        mkdir: true,
-      },
-    },
-  },
+  production: {},
 };

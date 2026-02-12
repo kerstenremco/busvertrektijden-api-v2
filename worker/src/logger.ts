@@ -10,15 +10,7 @@ const loggerOptions = {
       },
     },
   },
-  production: {
-    transport: {
-      target: "pino/file",
-      options: {
-        destination: "logs/worker.log",
-        mkdir: true,
-      },
-    },
-  },
+  production: {},
 };
 
 const logger = pino(loggerOptions[process.env.NODE_ENV || "development"]);
