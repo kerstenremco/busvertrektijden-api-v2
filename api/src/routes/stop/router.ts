@@ -78,7 +78,8 @@ const getStopsByName = async (
 };
 
 const getStopsFromDB = async (name: string, date: string, seconds: number, fastify: FastifyInstance): Promise<StopTimeRowType[]> => {
-  const result = await fastify.pg.query("SELECT * FROM get_departures_by_stopname($1, $2, $3)", [name, date, seconds]);
+  // TODO: date param
+  const result = await fastify.pg.query("SELECT * FROM get_departures_by_stopname($1, $2)", [name, seconds]);
   const rows = result.rows as StopTimeRowType[];
   return rows;
 };

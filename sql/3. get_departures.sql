@@ -1,6 +1,5 @@
 CREATE OR REPLACE FUNCTION get_departures_by_stopname(
   p_stopname TEXT,
-  p_date TEXT,
   p_min_departure_seconds INT DEFAULT 0
 )
 RETURNS TABLE (
@@ -23,5 +22,51 @@ RETURNS TABLE (
 LANGUAGE sql
 STABLE
 AS $$
-  WITH relevant_stops AS ( SELECT stop_id FROM stops WHERE ( lower(stop_name) = p_stopname AND location_type = 0 ) OR parent_station IN ( SELECT stop_id FROM stops WHERE lower(stop_name) = p_stopname AND location_type = 1 ) ) SELECT st.stop_id, st.arrival_time, st.departure_time, st.stop_headsign, s.stop_name, s.platform_code, r.route_id, r.route_short_name, r.route_long_name, r.route_color, r.route_text_color, t.trip_id, t.trip_headsign, t.trip_short_name, t.trip_long_name FROM stop_times st JOIN relevant_stops rs ON rs.stop_id = st.stop_id JOIN stops s ON s.stop_id = st.stop_id JOIN trips t ON t.trip_id = st.trip_id JOIN calendar_dates cd ON cd.service_id = t.service_id AND cd.date = p_date JOIN routes r ON r.route_id = t.route_id AND r.route_type = 3 WHERE st.departure_seconds >= p_min_departure_seconds ORDER BY st.departure_seconds;
+  WITH RELEVANT_STOPS AS (
+    SELECT s1.STOP_ID
+    FROM STOPS s1
+    LEFT JOIN STOPS parent
+        ON parent.STOP_ID = s1.PARENT_STATION
+    WHERE
+        (s1.STOP_NAME = p_stopname AND s1.LOCATION_TYPE = 0)
+        OR
+        (parent.STOP_NAME = p_stopname AND parent.LOCATION_TYPE = 1)
+),
+BUS_ROUTES AS (
+    SELECT ROUTE_ID,
+           ROUTE_SHORT_NAME,
+           ROUTE_LONG_NAME,
+           ROUTE_COLOR,
+           ROUTE_TEXT_COLOR
+    FROM ROUTES
+    WHERE ROUTE_TYPE = 3
+)
+SELECT
+    ST.STOP_ID,
+    ST.ARRIVAL_TIME,
+    ST.DEPARTURE_TIME,
+    ST.STOP_HEADSIGN,
+    S.STOP_NAME,
+    S.PLATFORM_CODE,
+    R.ROUTE_ID,
+    R.ROUTE_SHORT_NAME,
+    R.ROUTE_LONG_NAME,
+    R.ROUTE_COLOR,
+    R.ROUTE_TEXT_COLOR,
+    T.TRIP_ID,
+    T.TRIP_HEADSIGN,
+    T.TRIP_SHORT_NAME,
+    T.TRIP_LONG_NAME
+FROM STOP_TIMES ST
+JOIN RELEVANT_STOPS RS
+    ON RS.STOP_ID = ST.STOP_ID
+JOIN TODAY_ACTIVE_TRIPS T
+    ON T.TRIP_ID = ST.TRIP_ID
+JOIN BUS_ROUTES R
+    ON R.ROUTE_ID = T.ROUTE_ID
+JOIN STOPS S
+    ON S.STOP_ID = ST.STOP_ID
+WHERE ST.DEPARTURE_SECONDS >= 0
+ORDER BY ST.DEPARTURE_SECONDS
+LIMIT 20;
 $$;
