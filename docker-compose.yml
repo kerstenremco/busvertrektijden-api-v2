@@ -3,6 +3,7 @@ services:
     build: ./api
     env_file: ".env"
     network_mode: "host"
+    restart: "unless-stopped"
     logging:
       driver: "loki"
       options:
@@ -11,6 +12,7 @@ services:
     build: ./worker
     env_file: ".env"
     network_mode: "host"
+    restart: "unless-stopped"
     logging:
       driver: "loki"
       options:
