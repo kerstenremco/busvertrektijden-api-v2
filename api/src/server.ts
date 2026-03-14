@@ -21,7 +21,7 @@ fastify.register(stopRoute, { prefix: "/stop" });
 
 // Hooks
 fastify.addHook("onRequest", async (request) => {
-  const ip = request.headers["CF-Connecting-IP"] || request.headers["X-Forwarded-For"];
+  const ip = request.headers["cf-connecting-ip"] || request.headers["x-forwarded-for"];
   if (!ip) {
     request.headers["x-hashed-ip"] = "unknown";
     return;
