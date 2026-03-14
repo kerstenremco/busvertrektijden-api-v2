@@ -9,6 +9,9 @@ const stopsRoute = async (fastify: FastifyInstance) => {
     // Query
     const result = await fastify.pg.query("SELECT * FROM search_stops($1)", [search]);
 
+    // Log
+    request.log.info(`[STOPS SEARCH] search: ${search}, results: ${result.rowCount}`);
+
     // Response
     return { result: result.rows };
   });

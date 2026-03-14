@@ -2,6 +2,7 @@ import pino from "pino";
 
 const loggerOptions = {
   development: {
+    level: "info",
     transport: {
       target: "pino-pretty",
       options: {
@@ -10,7 +11,9 @@ const loggerOptions = {
       },
     },
   },
-  production: {},
+  production: {
+    level: "info",
+  },
 };
 
 const logger = pino(loggerOptions[process.env.NODE_ENV || "development"]);

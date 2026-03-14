@@ -1,5 +1,6 @@
 export const loggerOptions = {
   development: {
+    level: "info",
     transport: {
       target: "pino-pretty",
       options: {
@@ -8,5 +9,7 @@ export const loggerOptions = {
       },
     },
   },
-  production: {},
+  production: {
+    level: "info",
+  },
 };

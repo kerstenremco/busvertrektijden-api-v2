@@ -16,6 +16,9 @@ export const stopRoute = async (fastify: FastifyInstance) => {
     async (request) => {
       const { name } = request.params;
       const { date, filternumbers, limit } = request.query;
+      request.log.info(
+        `[STOP QUERY] name: ${name}, date: ${date}, filternumbers: ${filternumbers}, limit: ${limit}, visitor: ${request.headers["x-hashed-ip"]}, home_assistant: ${request.headers["x-is-home-assistant"]}`,
+      );
 
       const result = await getStopsByName(name, date, filternumbers, limit, fastify);
       return { result };
