@@ -19,7 +19,7 @@
     "@fastify/swagger-ui": "^5.2.5",
     "@sinclair/typebox": "^0.34.48",
     "dayjs": "^1.11.20",
-    "fastify": "^5.8.2",
+    "fastify": "^5.8.4",
     "fastify-plugin": "^5.1.0",
     "pg": "^8.20.0",
     "pino-pretty": "^13.1.3"
