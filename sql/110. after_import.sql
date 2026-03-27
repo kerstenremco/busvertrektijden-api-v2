@@ -23,6 +23,15 @@ ON TODAY_ACTIVE_TRIPS (ROUTE_ID);
 CREATE INDEX idx_stop_times_trip
 ON STOP_TIMES (TRIP_ID);
 
+CREATE INDEX idx_stops_name_lower
+ON STOPS (lower(STOP_NAME));
+
+CREATE INDEX idx_stops_parent_station
+ON STOPS (PARENT_STATION);
+
+CREATE INDEX idx_routes_type_id
+ON ROUTES (ROUTE_TYPE, ROUTE_ID);
+
 -- Functions
 ALTER TABLE stops
 ADD COLUMN stop_name_url text
@@ -50,39 +59,46 @@ AS $$
     LIMIT 50;
 $$;
 
-CREATE OR REPLACE FUNCTION get_departures_by_stopname(
-  p_stopname TEXT,
-  p_min_departure_seconds INT DEFAULT 0
-)
+CREATE OR REPLACE FUNCTION get_departures_by_stopname(p_stopname TEXT, p_min_departure_seconds INT DEFAULT 0)
 RETURNS TABLE (
-  stop_id TEXT,
-  arrival_time TEXT,
-  departure_time TEXT,
-  stop_headsign TEXT,
-  stop_name TEXT,
-  platform_code TEXT,
-  route_id TEXT,
-  route_short_name TEXT,
-  route_long_name TEXT,
-  route_color TEXT,
-  route_text_color TEXT,
-  trip_id TEXT,
-  trip_headsign TEXT,
-  trip_short_name TEXT,
-  trip_long_name TEXT
+    stop_id TEXT,
+    arrival_time TEXT,
+    departure_time TEXT,
+    stop_headsign TEXT,
+    stop_name TEXT,
+    platform_code TEXT,
+    route_id TEXT,
+    route_short_name TEXT,
+    route_long_name TEXT,
+    route_color TEXT,
+    route_text_color TEXT,
+    trip_id TEXT,
+    trip_headsign TEXT,
+    trip_short_name TEXT,
+    trip_long_name TEXT
 )
 LANGUAGE sql
 STABLE
 AS $$
-  WITH RELEVANT_STOPS AS (
-    SELECT s1.STOP_ID
-    FROM STOPS s1
-    LEFT JOIN STOPS parent
-        ON parent.STOP_ID = s1.PARENT_STATION
-    WHERE
-        (lower(s1.STOP_NAME) = p_stopname AND s1.LOCATION_TYPE = 0)
-        OR
-        (lower(s1.STOP_NAME) = p_stopname AND parent.LOCATION_TYPE = 1)
+WITH MATCHING_STATIONS AS (
+    SELECT STOP_ID
+    FROM STOPS
+    WHERE lower(STOP_NAME) = lower(p_stopname)
+      AND LOCATION_TYPE = 1
+),
+RELEVANT_STOPS AS (
+    SELECT STOP_ID
+    FROM MATCHING_STATIONS
+    UNION
+    SELECT s.STOP_ID
+    FROM STOPS s
+    JOIN MATCHING_STATIONS ms
+      ON s.PARENT_STATION = ms.STOP_ID
+    UNION
+    SELECT STOP_ID
+    FROM STOPS
+    WHERE lower(STOP_NAME) = lower(p_stopname)
+      AND LOCATION_TYPE = 0
 ),
 BUS_ROUTES AS (
     SELECT ROUTE_ID,
