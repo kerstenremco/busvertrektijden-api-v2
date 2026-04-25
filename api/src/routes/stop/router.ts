@@ -5,6 +5,7 @@ import { FastifyInstance } from "fastify";
 import { compute, getDateToday, getSecondsSinceMidnight } from "./helpers.js";
 import { getAlertsForStops } from "./realtime.js";
 import { getTripUpdates, getAlerts } from "./realtime.js";
+import { rewriteStopName } from "../../misc/stop_rewrites.js";
 dayjs.extend(customParseFormat);
 
 export const stopRoute = async (fastify: FastifyInstance) => {
@@ -15,12 +16,14 @@ export const stopRoute = async (fastify: FastifyInstance) => {
     },
     async (request) => {
       const { name } = request.params;
+      const nameRewritten = rewriteStopName(name);
       const { date, filternumbers, limit } = request.query;
+
       request.log.info(
-        `[STOP QUERY] name: ${name}, date: ${date}, filternumbers: ${filternumbers}, limit: ${limit}, visitor: ${request.headers["x-hashed-ip"]}, home_assistant: ${request.headers["x-is-home-assistant"]}`,
+        `[STOP QUERY] name: ${name}, rewrite: ${nameRewritten}, date: ${date}, filternumbers: ${filternumbers}, limit: ${limit}, visitor: ${request.headers["x-hashed-ip"]}, home_assistant: ${request.headers["x-is-home-assistant"]}`,
       );
 
-      const result = await getStopsByName(name, date, filternumbers, limit, fastify);
+      const result = await getStopsByName(nameRewritten, date, filternumbers, limit, fastify);
       return { result };
     },
   );
