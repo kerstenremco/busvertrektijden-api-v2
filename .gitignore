@@ -4,3 +4,4 @@ node_modules
 dist
 api/logs
 worker/logs
+tmp
