@@ -3,6 +3,7 @@ import stopsRoute from "./routes/stops/router.js";
 import { stopRoute } from "./routes/stop/router.js";
 import database from "./plugins/database.js";
 import redis from "./plugins/redis.js";
+import envPlugin from "./plugins/env.js";
 import swagger from "./plugins/swagger.js";
 import hashIp from "./plugins/hash.js";
 import { loggerOptions } from "./misc/options.js";
@@ -12,6 +13,7 @@ const fastify = Fastify({
   logger: loggerOptions[env],
 });
 
+await fastify.register(envPlugin);
 fastify.register(database);
 fastify.register(redis);
 fastify.register(swagger);

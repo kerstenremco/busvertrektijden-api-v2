@@ -3,8 +3,10 @@ import { fastifyRedis } from "@fastify/redis";
 import { FastifyInstance } from "fastify";
 
 async function redisConnector(fastify: FastifyInstance) {
-  const host = process.env.REDIS_HOST || "localhost";
-  const port = Number(process.env.REDIS_PORT) || 6379;
+  // @ts-ignore
+  const config = fastify.config;
+  const host = process.env.REDIS_HOST || config.REDIS_HOST;
+  const port = Number(process.env.REDIS_PORT) || config.REDIS_PORT;
   fastify.register(fastifyRedis, {
     host,
     port,
