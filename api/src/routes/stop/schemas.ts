@@ -15,7 +15,7 @@ const StopByNameQuerySchema = Type.Object({
 export type StopByNameQueryType = Static<typeof StopByNameQuerySchema>;
 
 const StopByNameParamsSchema = Type.Object({
-  name: Type.String({ minLength: 1, maxLength: 100, pattern: "^[A-Za-z0-9 _\\-.,'\"]+$" }),
+  name: Type.String({ minLength: 1, maxLength: 100, pattern: "^[A-Za-z0-9 _\\-+.,'\"]+$" }),
 });
 
 export type StopByNameParamsType = Static<typeof StopByNameParamsSchema>;

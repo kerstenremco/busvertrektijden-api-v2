@@ -2,7 +2,7 @@ import { Static, Type } from "@sinclair/typebox";
 
 // Query
 const SearchQuerySchema = Type.Object({
-  search: Type.String({ minLength: 1, maxLength: 100, pattern: "^[A-Za-z0-9 _\\-.,'\"]+$" }),
+  search: Type.String({ minLength: 1, maxLength: 100, pattern: "^[A-Za-z0-9 _\\-+.,'\"]+$" }),
 });
 
 export type SearchQueryType = Static<typeof SearchQuerySchema>;
