@@ -1,6 +1,6 @@
 {
   "name": "busvertrektijden-api",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "The API for busvertrektijden.nl - V2",
   "main": "server.js",
   "type": "module",
