@@ -64,7 +64,9 @@ export type RealtimeType = Static<typeof RealtimeSchema>;
 const ComputedSchema = Type.Object({
   time: string,
   seconds: integer,
+  bus_number: string,
   name: string,
+  trip_name: nullableString,
 });
 
 export type ComputedType = Static<typeof ComputedSchema>;

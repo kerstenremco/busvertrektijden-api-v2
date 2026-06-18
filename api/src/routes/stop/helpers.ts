@@ -23,7 +23,9 @@ export const compute = (stop: StopTimeRowWithRealtimeAndAlertType): StopTimeWith
     computed: {
       time: dayjs(stop.departure_time, "HH:mm:ss").add(delay, "second").format("HH:mm"),
       seconds: dayjs(stop.departure_time, "HH:mm:ss").add(delay, "second").diff(dayjs(), "second"),
+      bus_number: stop.route_short_name || "",
       name: stop.stop_headsign || stop.trip_headsign || "",
+      trip_name: stop.trip_long_name || "Bus",
     },
   };
 };
