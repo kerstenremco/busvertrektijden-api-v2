@@ -2,7 +2,8 @@ import { Static, Type } from "@sinclair/typebox";
 
 // Query
 const SearchQuerySchema = Type.Object({
-  search: Type.String({ minLength: 1, maxLength: 100, pattern: "^[A-Za-z0-9 _\\-+.,'\"]+$" }),
+  // letters, numbers, spaces, and the following special characters: singlequote / & ( ) - + , . "
+  search: Type.String({ minLength: 1, maxLength: 100, pattern: "^[A-Za-z0-9 '/&()\\-+,.]+$" }),
 });
 
 export type SearchQueryType = Static<typeof SearchQuerySchema>;
