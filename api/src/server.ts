@@ -42,7 +42,7 @@ fastify.addHook("onRequest", async (request) => {
 });
 
 // Start server
-fastify.listen({ port: 3000 }, (err, address) => {
+fastify.listen({ port: 3000, host: '0.0.0.0' }, (err, address) => {
   if (err) {
     fastify.log.error(err);
     process.exit(1);
