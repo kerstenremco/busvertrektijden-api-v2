@@ -1,6 +1,6 @@
 [project]
 name = "busvertrektijden-api-v2"
-version = "2.3.0"
+version = "2.2.1"
 description = "busvertrektijden sql tool"
 requires-python = ">=3.13"
 dependencies = [
