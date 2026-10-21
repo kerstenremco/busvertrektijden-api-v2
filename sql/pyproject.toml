@@ -1,0 +1,10 @@
+[project]
+name = "busvertrektijden-api-v2"
+version = "2.3.0"
+description = "busvertrektijden sql tool"
+requires-python = ">=3.13"
+dependencies = [
+    "dotenv>=0.9.9",
+    "psycopg[binary,pool]>=3.3.6",
+    "requests>=2.34.2",
+]

@@ -1,13 +1,19 @@
-API = "https://gtfs.ovapi.nl/nl/"
+import requests
+import zipfile
+import psycopg, dotenv, os
+
+#API = "https://gtfs.ovapi.nl/nl/"
+API = "http://localhost:8000/"
 SOURCE_FILE = "gtfs-nl.zip"
 TMP_DIR = "tmp"
 
 source_location = f"{API}{SOURCE_FILE}"
 source_file = f"{TMP_DIR}/{SOURCE_FILE}"
+dotenv.load_dotenv()
 
 def download_source():
-    import requests
     print("Downloading source file.")
+    os.makedirs(TMP_DIR, exist_ok=True)
     response = requests.get(source_location)
     response.raise_for_status()
     with open(source_file, "wb") as f:
@@ -15,24 +21,20 @@ def download_source():
     print("Download complete.")
 
 def extract_source():
-    import zipfile
     print("Extracting source file.")
     with zipfile.ZipFile(source_file, "r") as zip_ref:
         zip_ref.extractall(TMP_DIR)
     print("Extraction complete.")
 
 def cleanup():
-    import os
     print("Cleaning up temporary files.")
-    if os.path.exists(source_file):
-        os.remove(source_file)
-    for table in TABLES:
-        staging_file = f"{TMP_DIR}/{table}.txt"
-        if os.path.exists(staging_file):
-            os.remove(staging_file)
+    for file in os.listdir(TMP_DIR):
+        file_path = os.path.join(TMP_DIR, file)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
     print("Cleanup complete.")
 
-import psycopg, dotenv, os
+
 
 TABLES = [
     "calendar_dates",
@@ -43,7 +45,6 @@ TABLES = [
 ]
 
 def import_staging():
-    dotenv.load_dotenv()
     with psycopg.connect(os.getenv('DBCON', 'dbname=bustijden user=bustijden password=bustijden host=localhost')) as conn:
         with conn.cursor() as cur:
             print("Truncate staging.")
@@ -58,6 +59,9 @@ def import_staging():
                         copy.write(f.read())
                 print(f"Importing {table} to staging complete.")
 
+def to_prod():
+    with psycopg.connect(os.getenv('DBCON', 'dbname=bustijden user=bustijden password=bustijden host=localhost')) as conn:
+        with conn.cursor() as cur:
             print("Truncate main tables.")
             for table in TABLES:
                 cur.execute(f"TRUNCATE TABLE {table} CASCADE")
@@ -76,15 +80,14 @@ if __name__ == "__main__":
     if "-d" in os.sys.argv:
         download_source()
 
-    if "-i" in os.sys.argv:
+    if "-e" in os.sys.argv:
         extract_source()
+
+    if "-i" in os.sys.argv:
         import_staging()
+
+    if "-p" in os.sys.argv:
+        to_prod()
 
     if "-c" in os.sys.argv:
-        cleanup()
-
-    if "-a" in os.sys.argv:
-        download_source()
-        extract_source()
-        import_staging()
         cleanup()

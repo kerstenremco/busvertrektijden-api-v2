@@ -121,6 +121,7 @@ CREATE TABLE "stops" (
     "wheelchair_boarding" INTEGER,
     "platform_code" TEXT,
     "zone_id" TEXT,
+    "stop_ifopt" TEXT,
 
     CONSTRAINT "stops_pkey" PRIMARY KEY ("stop_id")
 );
@@ -137,6 +138,7 @@ CREATE TABLE "stops_staging" (
     "wheelchair_boarding" INTEGER,
     "platform_code" TEXT,
     "zone_id" TEXT,
+    "stop_ifopt" TEXT,
 
     PRIMARY KEY ("stop_id")
 );
