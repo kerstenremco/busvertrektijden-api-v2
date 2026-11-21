@@ -1,5 +1,7 @@
 services:
   api:
+    networks:
+      - traefik_net
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik_net"
