@@ -8,7 +8,7 @@ GTFS_FILE = os.getenv("GTFS_FILE", "gtfs-nl.zip")
 GTFS_URL_PATH = os.getenv("GTFS_URL", "https://gtfs.ovapi.nl/nl/")
 GTFS_LOCAL_PATH = os.getenv("GTFS_LOCAL_PATH", "sql/tmp/")
 
-DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_HOST = os.getenv("DB_HOST_EXTERNAL", "localhost")
 DB_NAME = os.getenv("DB_NAME", "busvertrektijden")
 DB_USER = os.getenv("DB_USER", "busvertrektijden")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "busvertrektijden")
