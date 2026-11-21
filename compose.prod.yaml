@@ -1,0 +1,22 @@
+services:
+  api:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik_net"
+      - "traefik.http.services.api.loadbalancer.server.port=3000"
+      # http
+      - "traefik.http.routers.api.rule=Host(`${API_DOMAIN}`)"
+      - "traefik.http.routers.api.entrypoints=web"
+      # https
+      - "traefik.http.routers.api-secure.rule=Host(`${API_DOMAIN}`)"
+      - "traefik.http.routers.api-secure.entrypoints=websecure"
+      - "traefik.http.routers.api-secure.tls=true"
+      - "traefik.http.routers.api-secure.service=api"
+      # CORS middleware
+      - "traefik.http.middlewares.api-cors.headers.accessControlAllowOriginList=https://www.busvertrektijden.nl"
+      # Attach middleware
+      - "traefik.http.routers.api.middlewares=api-cors"
+
+networks:
+  traefik_net:
+    external: true

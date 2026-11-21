@@ -38,7 +38,9 @@ const schema = {
 
 const options = {
   schema: schema,
-  dotenv: true,
+  dotenv: {
+    path: "../.env",
+  },
   data: process.env,
 };
 

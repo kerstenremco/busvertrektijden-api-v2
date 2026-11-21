@@ -1,7 +1,3 @@
-node_modules
 .env
 .DS_Store
-dist
-api/logs
-worker/logs
-tmp
+.venv

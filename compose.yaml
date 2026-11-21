@@ -1,0 +1,51 @@
+services:
+  api:
+    build: ./api
+    container_name: bustijden-api
+    env_file: .env
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - bustijden
+
+  worker:
+    build: ./worker
+    container_name: bustijden-worker
+    env_file: .env
+    restart: unless-stopped
+    depends_on:
+      - redis
+    networks:
+      - bustijden
+
+  postgres:
+    image: postgres:18.4-trixie
+    container_name: bustijden-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+    networks:
+      - bustijden
+
+  redis:
+    image: redis:7.4
+    container_name: bustijden-redis
+    restart: unless-stopped
+    networks:
+      - bustijden
+
+volumes:
+  pgdata:
+    driver: local
+
+networks:
+  bustijden:
+    driver: bridge

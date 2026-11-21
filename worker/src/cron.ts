@@ -3,7 +3,9 @@ import updates from "./updates.js";
 import alerts from "./alerts.js";
 import { getTimeSchemaForUpdates, getTimeSchemaForAlerts } from "./helpers.js";
 import logger from "./logger.js";
-import "dotenv/config";
+import { config } from "dotenv";
+
+config({ path: "../.env" });
 
 const main = () => {
   logger.info("Starting worker...");
